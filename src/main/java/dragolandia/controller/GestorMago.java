@@ -2,9 +2,6 @@ package dragolandia.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.hibernate.*;
-
 import dragolandia.model.Mago;
 import dragolandia.model.hechizos.Hechizo;
 import jakarta.persistence.EntityManager;
@@ -25,6 +22,7 @@ public class GestorMago {
             try (EntityManager em = HibernateUtil.getEntityManager()) {
 
                 try {
+
                     em.getTransaction().begin();
 
                     List<Hechizo> hechizosMerged = new ArrayList<>();
@@ -99,23 +97,28 @@ public class GestorMago {
         
         boolean actualizado = false;
 
-        Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
             
-            tx = session.beginTransaction();
 
-            Mago mago = session.get(Mago.class, id);
-            if(mago != null){
-                mago.setNombre(nombre);
-                tx.commit();
+            try {
 
-                actualizado = true;
-                System.out.println("Nuevo nombre: "+mago.getNombre()+".");
+                em.getTransaction().begin();
+
+                Mago mago = em.find(Mago.class, id);
+                if(mago != null){
+                    mago.setNombre(nombre);
+                    em.merge(mago);
+                    em.getTransaction().commit();
+
+                    actualizado = true;
+                    System.out.println("Nuevo nombre: "+mago.getNombre()+".");
+                }
+            } catch (Exception e) {
+                System.err.println("No se ha podido actualizar el nombre del mago: "+e.getMessage());
             }
 
         } catch (Exception e) {
-            if(tx != null) tx.rollback();
-            System.err.println("No se ha podido actualizar el nombre del mago: "+e.getMessage());
+            System.err.println("No se ha podido acceder a la sesión: "+e.getMessage());
         }
         return actualizado;
     }
@@ -131,24 +134,28 @@ public class GestorMago {
         
         boolean actualizado = false;
 
-        Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            
-            tx = session.beginTransaction();
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
 
-            Mago mago = session.get(Mago.class, id);
+            try {
+                
+                em.getTransaction().begin();
+                
+                Mago mago = em.find(Mago.class, id);
 
-            if(mago != null){
-                mago.setNivelMagia(nivelMagia);
-                tx.commit();
+                if(mago != null){
+                    mago.setNivelMagia(nivelMagia);
+                    em.merge(mago);
+                    em.getTransaction().commit();
 
-                actualizado = true;
-                System.out.println("Nuevo nivel de magia: "+mago.getNivelMagia()+".");
+                    actualizado = true;
+                    System.out.println("Nuevo nivel de magia: "+mago.getNivelMagia()+".");
+                }
+            } catch (Exception e) {
+                System.err.println("No se ha podido actualizar el nivel de magia del mago: "+e.getMessage());
             }
 
         } catch (Exception e) {
-            if(tx!=null) tx.rollback();
-            System.err.println("No se ha podido actualizar el nivel de magia del mago: "+e.getMessage());
+            System.err.println("No se ha podido acceder a la sesión: "+e.getMessage());
         }
         return actualizado;
     }

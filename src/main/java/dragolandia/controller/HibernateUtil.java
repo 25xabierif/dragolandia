@@ -22,5 +22,3 @@ public class HibernateUtil {
         }
     }
 }
-
-// Hay que cambiar el SessionFactory

@@ -1,13 +1,10 @@
 package dragolandia.controller;
 
 import java.util.List;
-
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 import dragolandia.model.Bosque;
 import dragolandia.model.Dragon;
 import dragolandia.model.Monstruo;
+import jakarta.persistence.EntityManager;
 
 public class GestorBosque {
     
@@ -17,21 +14,24 @@ public class GestorBosque {
 
         if(validarBosque(nombre, nivelPeligro)){
 
-            Transaction tx = null;
+            Bosque bosque = new Bosque(nombre, nivelPeligro, monstruoJefe);
 
-            try (Session session = HibernateUtil.getEntityManager()) {
+            try (EntityManager em = HibernateUtil.getEntityManager()) {
                 
                 try {
                     
-                    tx = session.beginTransaction();
+                    em.getTransaction().begin();
+                    em.persist(bosque);
+                    em.getTransaction().commit();
 
+                    added = true;
+                    System.out.println("El bosque '"+bosque.getNombre()+"' se ha registrado en la BD con éxito.");
                 } catch (Exception e) {
-                    if(tx!=null && tx.isActive()) tx.rollback();
                     System.err.println("No se ha podido registrar el bosque: "+e.getMessage());
                 }
 
             } catch (Exception e) {
-                System.err.println("Error en la sesión hibernate: "+e.getMessage());
+                System.err.println("Error en acceso a la sesión: "+e.getMessage());
             }
         }
         return added;

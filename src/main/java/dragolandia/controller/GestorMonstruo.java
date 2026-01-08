@@ -1,9 +1,7 @@
 package dragolandia.controller;
-
-import org.hibernate.*;
-
 import dragolandia.model.Monstruo;
 import dragolandia.model.Tipo;
+import jakarta.persistence.EntityManager;
 
 public class GestorMonstruo {
     
@@ -17,29 +15,32 @@ public class GestorMonstruo {
      */
     public boolean addMonstruo(String nombre, int vida, Tipo tipo, int fuerza){
 
-        boolean registrado = false;
+        boolean added = false;
 
         if(validarMonstruo(nombre, vida, tipo)){
 
             Monstruo monstruo = new Monstruo(nombre, vida, tipo, fuerza);
 
-            Transaction tx = null;
+            try (EntityManager em = HibernateUtil.getEntityManager()) {
 
-            try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-                
-                tx = session.beginTransaction();
-                session.persist(monstruo);
-                tx.commit();
-                registrado = true;
-                System.out.println("El monstruo se ha registrado con éxito en la bd con id: "+monstruo.getId());
+                try {
+
+                    em.getTransaction().begin();
+                    em.persist(monstruo);
+                    em.getTransaction().commit();
+
+                    added = true;
+                    System.out.println("El monstruo se ha registrado con éxito en la bd con id: "+monstruo.getId());
+
+                } catch (Exception e) {
+                    System.err.println("No se ha podido registrar el monstruo en la bd: "+e.getMessage());
+                }
 
             } catch (Exception e) {
-                if(tx!=null) tx.rollback();
-                System.err.println("No se ha podido registrar el monstruo en la bd: "+e.getMessage());
-                return registrado;
+                System.err.println("No se ha podido acceder a la sesión: "+e.getMessage());
             }
         }
-        return registrado;
+        return added;
     }
 
     /**
@@ -79,26 +80,29 @@ public class GestorMonstruo {
 
         boolean actualizado = false;
 
-        Transaction tx = null;
-
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
             
-            tx = session.beginTransaction();
+            try {
 
-            Monstruo monstruo = session.get(Monstruo.class, id);
+                em.getTransaction().begin();
 
-            if(monstruo != null){
-                monstruo.setNombre(nombre);
-                session.merge(monstruo);
-                tx.commit();
+                Monstruo monstruo = em.find(Monstruo.class, id);
 
-                actualizado = true;
-                System.out.println("Nuevo nombre: "+monstruo.getNombre()+".");
+                if(monstruo != null){
+                    monstruo.setNombre(nombre);
+                    em.merge(monstruo);
+                    em.getTransaction().commit();
+
+                    actualizado = true;
+                    System.out.println("Nuevo nombre: "+monstruo.getNombre()+".");
+                }
+
+            } catch (Exception e) {
+                System.err.println("No se ha podido actualizar el nombre del monstruo: "+e.getMessage());
             }
 
         } catch (Exception e) {
-            if(tx!=null) tx.rollback();
-            System.err.println("No se ha podido actualizar el nombre del monstruo: "+e.getMessage());
+            System.err.println("No se ha podido acceder a la sesión: "+e.getMessage());
             return actualizado;
         }
 
@@ -116,26 +120,29 @@ public class GestorMonstruo {
 
         boolean actualizado = false;
 
-        Transaction tx = null;
-
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
             
-            tx = session.beginTransaction();
+            try {
 
-            Monstruo monstruo = session.get(Monstruo.class, id);
-            if(monstruo != null){
-                monstruo.setVida(vida);
-                session.merge(monstruo);
-                tx.commit();
+                em.getTransaction().begin();
 
-                actualizado = true;
-                System.out.println("HP restante: "+monstruo.getVida());
+                Monstruo monstruo = em.find(Monstruo.class, id);
+                if(monstruo != null){
+                    monstruo.setVida(vida);
+                    em.merge(monstruo);
+                    em.getTransaction().commit();
+
+                    actualizado = true;
+                    System.out.println("HP restante: "+monstruo.getVida());
+                }
+
+            } catch (Exception e) {
+                System.err.println("No se ha podido actualizar el HP del monstruo: "+e.getMessage());
             }
 
 
         } catch (Exception e) {
-            if(tx!=null) tx.rollback();
-            System.err.println("No se ha podido actualizar el HP del monstruo: "+e.getMessage());
+            System.err.println("No se ha podido acceder a la sesión: "+e.getMessage());
             return actualizado;
         }
         return actualizado;
@@ -152,25 +159,28 @@ public class GestorMonstruo {
 
         boolean actualizado = false;
 
-        Transaction tx = null;
-
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
             
-            tx = session.beginTransaction();
+            try {
 
-            Monstruo monstruo = session.get(Monstruo.class, id);
+                em.getTransaction().begin();
 
-            if(monstruo!=null){
-                monstruo.setFuerza(fuerza);
-                session.merge(monstruo);
-                tx.commit();
+                Monstruo monstruo = em.find(Monstruo.class, id);
 
-                actualizado = true;
-                System.out.println("Nuevo nivel de fuerza: "+monstruo.getFuerza());
+                if(monstruo!=null){
+                    monstruo.setFuerza(fuerza);
+                    em.merge(monstruo);
+                    em.getTransaction().commit();
+
+                    actualizado = true;
+                    System.out.println("Nuevo nivel de fuerza: "+monstruo.getFuerza());
+                }
+
+            } catch (Exception e) {
+                System.err.println("No se ha podido actualizar la fuerza del monstruo: "+e.getMessage());
             }
         } catch (Exception e) {
-            if(tx!=null) tx.rollback();
-            System.err.println("No se ha podido actualizar la fuerza del monstruo: "+e.getMessage());
+            System.err.println("No se ha podido acceder a la sesión: "+e.getMessage());
             return actualizado;
         }
         return actualizado;
@@ -188,26 +198,28 @@ public class GestorMonstruo {
 
         boolean actualizado = false;
 
-        Transaction tx = null;
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            try {
 
-            tx = session.beginTransaction();
+                em.getTransaction().begin();
 
-            Monstruo monstruo = session.get(Monstruo.class, id);
+                Monstruo monstruo = em.find(Monstruo.class, id);
 
-            if(monstruo != null){
-                monstruo.setTipo(tipo);
-                session.merge(monstruo);
-                tx.commit();
+                if(monstruo != null){
+                    monstruo.setTipo(tipo);
+                    em.merge(monstruo);
+                    em.getTransaction().commit();
 
-                actualizado = true;
-                System.out.println("Nuevo tipo de monstruo: "+monstruo.getTipo());
+                    actualizado = true;
+                    System.out.println("Nuevo tipo de monstruo: "+monstruo.getTipo());
+                }
+            } catch (Exception e) {
+            System.err.println("No se ha podido actualizar el tipo del monstruo: "+e.getMessage());
             }
 
         } catch (Exception e) {
-            if(tx!=null) tx.rollback();
-            System.err.println("No se ha podido actualizar el tipo del monstruo: "+e.getMessage());
+            System.err.println("No se ha podido acceder a la sesión: "+e.getMessage());
             return actualizado;
         }
         return actualizado;
@@ -216,12 +228,12 @@ public class GestorMonstruo {
     /* public boolean updateBosque(int id, int idBosque){
 
         boolean actualizado = false;
+
         
-        Transaction tx = null;
-        
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
             
-            tx = session.beginTransaction();
+            em.getTransaction().begin();
+
 
             Monstruo monstruo = session.get(Monstruo.class, id);
 
@@ -230,14 +242,13 @@ public class GestorMonstruo {
             if(monstruo != null && bosque != null){
                 monstruo.setBosque(bosque);
                 session.merge(monstruo);
-                tx.commit();
+                em.getTransaction().commit();
 
                 actualizado = true;
                 System.out.println("El bosque del monstruo se ha actualizado con éxito: "+bosque.getNombre());
             }
 
         } catch (Exception e) {
-            if(tx!=null) tx.rollback();
             System.err.println("No se ha podido actualizar el bosque del monstruo: "+e.getMessage());
             return actualizado;
         }

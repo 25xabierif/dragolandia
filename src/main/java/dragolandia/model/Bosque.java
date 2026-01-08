@@ -67,6 +67,14 @@ public class Bosque {
         this.monstruoJefe = monstruoJefe;
     }
 
+    public Dragon getDragon(){
+        return dragon;
+    }
+
+    public void setDragon(Dragon dragon){
+        this.dragon = dragon;
+    }
+
     public void addMonstruo(Monstruo monstruo){
         this.monstruos.add(monstruo);
     }
