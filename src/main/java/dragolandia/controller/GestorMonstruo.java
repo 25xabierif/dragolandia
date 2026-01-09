@@ -225,33 +225,4 @@ public class GestorMonstruo {
         return actualizado;
     }
 
-    /* public boolean updateBosque(int id, int idBosque){
-
-        boolean actualizado = false;
-
-        
-        try (EntityManager em = HibernateUtil.getEntityManager()) {
-            
-            em.getTransaction().begin();
-
-
-            Monstruo monstruo = session.get(Monstruo.class, id);
-
-            Bosque bosque = session.get(Bosque.class, idBosque);
-
-            if(monstruo != null && bosque != null){
-                monstruo.setBosque(bosque);
-                session.merge(monstruo);
-                em.getTransaction().commit();
-
-                actualizado = true;
-                System.out.println("El bosque del monstruo se ha actualizado con éxito: "+bosque.getNombre());
-            }
-
-        } catch (Exception e) {
-            System.err.println("No se ha podido actualizar el bosque del monstruo: "+e.getMessage());
-            return actualizado;
-        }
-        return actualizado;
-    } */
 }

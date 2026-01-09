@@ -161,6 +161,73 @@ public class GestorMago {
     }
 
     /**
+     * Método que nos permite añadir hechizos al mago accediendo a este a través de un id
+     * @param id
+     * @param hechizo
+     * @return
+     */
+    public boolean addHechizo(int id, Hechizo hechizo){
+        boolean añadido = false;
+
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
+            
+            try {
+                
+                em.getTransaction().begin();
+                Mago mago = em.find(Mago.class, id);
+                mago.addHechizo(hechizo);
+                em.merge(mago);
+                em.getTransaction().commit();
+
+                añadido = true;
+                System.out.println("¡El mago "+mago.getNombre()+" ha aprendido el hechizo "+hechizo.getNombre()+"!");
+
+            } catch (Exception e) {
+                System.err.println("No se ha podido añadir el hechizo "+hechizo.getNombre()+"al mago: "+e.getMessage());
+            }
+
+        } catch (Exception e) {
+            System.err.println("No se ha podido acceder a la sesión: "+e.getMessage());
+        }
+
+        return añadido;
+    }
+
+
+    /**
+     * Método que nos permite eliminar hechizos del mago accediendo a este a través de un id
+     * @param id
+     * @param hechizo
+     * @return
+     */
+    public boolean popHechizo(int id, Hechizo hechizo){
+        boolean eliminado = false;
+
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
+            
+            try {
+                
+                em.getTransaction().begin();
+                Mago mago = em.find(Mago.class, id);
+                mago.popHechizo(hechizo);
+                em.merge(mago);
+                em.getTransaction().commit();
+
+                eliminado = true;
+                System.out.println("El mago "+mago.getNombre()+" ha olvidado el hechizo "+hechizo.getNombre()+".");
+
+            } catch (Exception e) {
+                System.err.println("No se ha podido eliminar el hechizo "+hechizo.getNombre()+"al mago: "+e.getMessage());
+            }
+
+        } catch (Exception e) {
+            System.err.println("No se ha podido acceder a la sesión: "+e.getMessage());
+        }
+
+        return eliminado;
+    }
+
+    /**
      * Método que comprueba que los parámetros del mago introducido cumplan unos estándares mínimos
      * @param nombre
      * @param vida

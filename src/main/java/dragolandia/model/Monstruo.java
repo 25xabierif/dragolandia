@@ -18,6 +18,10 @@ public class Monstruo {
 
     private int fuerza;
 
+    @ManyToOne
+    @JoinColumn(name = "bosque_id")
+    private Bosque bosque;
+
     public Monstruo(){}
 
     public Monstruo(String nombre, int vida, Tipo tipo, int fuerza){
@@ -65,6 +69,14 @@ public class Monstruo {
 
     public void setFuerza(int fuerza) {
         this.fuerza = fuerza;
+    }
+
+    public Bosque getBosque(){
+        return this.bosque;
+    }
+
+    public void setBosque(Bosque bosque){
+        this.bosque = bosque;
     }
 
     @Override

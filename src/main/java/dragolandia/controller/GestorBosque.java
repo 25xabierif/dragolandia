@@ -1,5 +1,6 @@
 package dragolandia.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import dragolandia.model.Bosque;
 import dragolandia.model.Dragon;
@@ -8,19 +9,37 @@ import jakarta.persistence.EntityManager;
 
 public class GestorBosque {
     
-    public boolean addBosque(String nombre, int nivelPeligro, Monstruo monstruoJefe, Dragon dragon, List<Monstruo> monstruos){
+    /**
+     * Método para registrar el bosque en la base de datos. A su vez también almacenará los monstruos que 
+     * le hayan sido facilitados en la lista de monstruos correspondiente.
+     * @param nombre
+     * @param nivelPeligro
+     * @param monstruoJefe
+     * @param monstruos
+     * @param dragon
+     * @return
+     */
+    public boolean addBosque(String nombre, int nivelPeligro, Monstruo monstruoJefe, List<Monstruo> monstruos, Dragon dragon){
         
         boolean added = false;
 
         if(validarBosque(nombre, nivelPeligro)){
-
-            Bosque bosque = new Bosque(nombre, nivelPeligro, monstruoJefe);
 
             try (EntityManager em = HibernateUtil.getEntityManager()) {
                 
                 try {
                     
                     em.getTransaction().begin();
+
+                    List <Monstruo> monstruosMerged = new ArrayList<>();
+
+                    for (Monstruo monstruo : monstruos) {
+                        Monstruo monstruoMerged = em.merge(monstruo);
+                        monstruosMerged.add(monstruoMerged);
+                    }
+
+                    Bosque bosque = new Bosque(nombre, nivelPeligro, monstruoJefe, monstruosMerged, dragon);
+
                     em.persist(bosque);
                     em.getTransaction().commit();
 
@@ -37,6 +56,20 @@ public class GestorBosque {
         return added;
     }
 
+    public boolean updateNombre(int id, String nombre){
+        boolean actualizado = false;
+
+        
+
+        return actualizado;
+    }
+
+    /**
+     * Método que nos permite asegurarnos de que los atributos del bosque cumplen unos requisitos concretos.
+     * @param nombre
+     * @param nivelPeligro
+     * @return
+     */
     public boolean validarBosque(String nombre, int nivelPeligro){
         boolean bosqueValido = true;
         if(nombre == null || nombre.trim().isEmpty()){

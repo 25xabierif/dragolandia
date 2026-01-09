@@ -24,15 +24,21 @@ public class Bosque {
     @JoinColumn(name = "dragon_jefe_id")
     private Dragon dragon;
 
-    @OneToMany (targetEntity = Monstruo.class)
+    @OneToMany (
+        mappedBy = "bosque",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
     private List<Monstruo> monstruos = new ArrayList<Monstruo>();
 
     public Bosque(){}
 
-    public Bosque(String nombre, int nivelPeligro, Monstruo monstruoJefe) {
+    public Bosque(String nombre, int nivelPeligro, Monstruo monstruoJefe, List<Monstruo> monstruos, Dragon dragon) {
         this.nombre = nombre;
         this.nivelPeligro = nivelPeligro;
         this.monstruoJefe = monstruoJefe;
+        this.monstruos = monstruos;
+        this.dragon = dragon;
     }
 
     public int getId() {
@@ -77,10 +83,12 @@ public class Bosque {
 
     public void addMonstruo(Monstruo monstruo){
         this.monstruos.add(monstruo);
+        monstruo.setBosque(this);
     }
 
     public void removeMonstruo(Monstruo monstruo){
         this.monstruos.remove(monstruo);
+        monstruo.setBosque(null);
     }
 
     @Override

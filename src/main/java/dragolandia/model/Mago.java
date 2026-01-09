@@ -70,11 +70,11 @@ public class Mago {
         this.hechizos = hechizos;
     }
 
-    public void addConjuro(Hechizo hechizo){
+    public void addHechizo(Hechizo hechizo){
         hechizos.add(hechizo);
     }
 
-    public void popConjuro(Hechizo hechizo){
+    public void popHechizo(Hechizo hechizo){
         hechizos.remove(hechizo);
     }
 
