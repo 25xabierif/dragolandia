@@ -81,6 +81,10 @@ public class Bosque {
         this.dragon = dragon;
     }
 
+    public List<Monstruo> getListaMonstruos(){
+        return monstruos;
+    }
+
     public void addMonstruo(Monstruo monstruo){
         this.monstruos.add(monstruo);
         monstruo.setBosque(this);
