@@ -167,7 +167,7 @@ public class GestorMago {
      * @return
      */
     public boolean addHechizo(int id, Hechizo hechizo){
-        boolean añadido = false;
+        boolean added = false;
 
         try (EntityManager em = HibernateUtil.getEntityManager()) {
             
@@ -179,7 +179,7 @@ public class GestorMago {
                 em.merge(mago);
                 em.getTransaction().commit();
 
-                añadido = true;
+                added = true;
                 System.out.println("¡El mago "+mago.getNombre()+" ha aprendido el hechizo "+hechizo.getNombre()+"!");
 
             } catch (Exception e) {
@@ -190,7 +190,7 @@ public class GestorMago {
             System.err.println("No se ha podido acceder a la sesión: "+e.getMessage());
         }
 
-        return añadido;
+        return added;
     }
 
 

@@ -90,7 +90,7 @@ public class Bosque {
         monstruo.setBosque(this);
     }
 
-    public void removeMonstruo(Monstruo monstruo){
+    public void popMonstruo(Monstruo monstruo){
         this.monstruos.remove(monstruo);
         monstruo.setBosque(null);
     }

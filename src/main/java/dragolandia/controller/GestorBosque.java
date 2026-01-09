@@ -210,6 +210,80 @@ public class GestorBosque {
     }
 
     /**
+     * Método que nos permite añadir un nuevo monstruo al bosque
+     * @param id
+     * @param monstruo
+     * @return
+     */
+    public boolean addMonstruo(int id, Monstruo monstruo){
+        boolean added = false;
+
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
+            
+            try {
+                
+                em.getTransaction().begin();
+                Bosque bosque = em.find(Bosque.class, id);
+
+                if(bosque != null){
+                    bosque.addMonstruo(monstruo);
+                    em.merge(bosque);
+                    em.getTransaction().commit();
+
+                    added = true;
+                    System.out.println("El monstruo "+monstruo.getNombre()+" ha sido añadido con éxito.");
+                }
+
+
+            } catch (Exception e) {
+                System.err.println("El monstruo no ha podido ser añadido a la lista: "+e.getMessage());
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error en acceso a la sesión: "+e.getMessage());
+        }
+
+        return added;
+    }
+
+    /**
+     * Método que nos permite eliminar un monstruo del bosque
+     * @param id
+     * @param monstruo
+     * @return
+     */
+    public boolean popMonstruo(int id, Monstruo monstruo){
+        boolean popped = false;
+
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
+            
+            try {
+                
+                em.getTransaction().begin();
+                Bosque bosque = em.find(Bosque.class, id);
+
+                if(bosque != null && bosque.getListaMonstruos().contains(monstruo)){
+                    bosque.popMonstruo(monstruo);
+                    em.merge(bosque);
+                    em.getTransaction().commit();
+
+                    popped = true;
+                    System.out.println("El monstruo "+monstruo.getNombre()+" ha sido eliminado con éxito.");
+                }
+
+
+            } catch (Exception e) {
+                System.err.println("El monstruo no ha podido ser eliminado de la lista: "+e.getMessage());
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error en acceso a la sesión: "+e.getMessage());
+        }
+
+        return popped;
+    }
+
+    /**
      * Método que nos permite asegurarnos de que los atributos del bosque cumplen unos requisitos concretos.
      * @param nombre
      * @param nivelPeligro
