@@ -1,6 +1,5 @@
 package dragolandia.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import dragolandia.model.Bosque;
 import dragolandia.model.Dragon;
@@ -31,14 +30,11 @@ public class GestorBosque {
                     
                     em.getTransaction().begin();
 
-                    List <Monstruo> monstruosMerged = new ArrayList<>();
+                    Bosque bosque = new Bosque(nombre, nivelPeligro, monstruoJefe, dragon);
 
                     for (Monstruo monstruo : monstruos) {
-                        Monstruo monstruoMerged = em.merge(monstruo);
-                        monstruosMerged.add(monstruoMerged);
+                        bosque.addMonstruo(monstruo);
                     }
-
-                    Bosque bosque = new Bosque(nombre, nivelPeligro, monstruoJefe, monstruosMerged, dragon);
 
                     em.persist(bosque);
                     em.getTransaction().commit();

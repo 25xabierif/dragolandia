@@ -16,11 +16,11 @@ public class Bosque {
     private String nombre;
     private int nivelPeligro;
 
-    @OneToOne
-    @JoinColumn(name = "monstruo_jefe_id")
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "monstruo_jefe_id", nullable = true)
     private Monstruo monstruoJefe;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "dragon_jefe_id")
     private Dragon dragon;
 
@@ -33,11 +33,10 @@ public class Bosque {
 
     public Bosque(){}
 
-    public Bosque(String nombre, int nivelPeligro, Monstruo monstruoJefe, List<Monstruo> monstruos, Dragon dragon) {
+    public Bosque(String nombre, int nivelPeligro, Monstruo monstruoJefe, Dragon dragon) {
         this.nombre = nombre;
         this.nivelPeligro = nivelPeligro;
         this.monstruoJefe = monstruoJefe;
-        this.monstruos = monstruos;
         this.dragon = dragon;
     }
 
@@ -79,6 +78,10 @@ public class Bosque {
 
     public void setDragon(Dragon dragon){
         this.dragon = dragon;
+    }
+
+    public void setMonstruos(List<Monstruo> monstruos){
+        this.monstruos = monstruos;
     }
 
     public List<Monstruo> getListaMonstruos(){
