@@ -81,8 +81,8 @@ public class Monstruo {
 
     @Override
     public String toString() {
-        return "Monstruo [id=" + id + ", nombre=" + nombre + ", vida=" + vida + ", tipo=" + tipo + ", fuerza=" + fuerza
-                + "]";
+        return "Monstruo id= " + id + ", nombre= " + nombre + ", vida= " + vida + ", tipo= " + tipo + ", fuerza= " + fuerza
+                + ".";
     }
 
     @Transient

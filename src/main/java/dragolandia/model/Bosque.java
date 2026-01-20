@@ -100,8 +100,8 @@ public class Bosque {
 
     @Override
     public String toString() {
-        return "Bosque [id=" + id + ", nombre=" + nombre + ", nivelPeligro=" + nivelPeligro + ", monstruoJefe="
-                + monstruoJefe.getNombre() + "]";
+        return "Bosque id= " + id + ", nombre= " + nombre + ", nivelPeligro= " + nivelPeligro + ", monstruoJefe= "
+                + monstruoJefe.getNombre() + ".";
     }
 
     @Transient

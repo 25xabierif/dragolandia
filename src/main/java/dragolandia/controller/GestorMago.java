@@ -38,7 +38,7 @@ public class GestorMago {
                     em.getTransaction().commit();
 
                     added = true;
-                    System.out.println("Mago registrado con éxito en la BD con id: "+mago.getId()+"."); 
+                    System.out.println("Mago registrado con éxito en la BD con id: "+mago.getId()+".");
                 } catch (Exception e) {
                     System.err.println("No se ha podido registrar el mago en la BD: "+e.getMessage());
                 }
@@ -77,6 +77,9 @@ public class GestorMago {
                 }
 
             } catch (Exception e) {
+                if(em.getTransaction().isActive()){
+                    em.getTransaction().rollback();
+                }
                 System.err.println("No se ha podido actualizar la vida del mago: "+e.getMessage());
             }
 

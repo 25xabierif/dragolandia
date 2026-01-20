@@ -58,4 +58,12 @@ public class Dragon {
     public void exhalar(Monstruo monstruo){
         monstruo.setVida(monstruo.getVida()-intensidadFuego);
     }
+
+    @Override
+    public String toString() {
+        return "Dragon id= " + id + ", nombre= " + nombre + ", intensidadFuego= " + intensidadFuego + ", resistencia= "
+                + resistencia + ".";
+    }
+
+    
 }

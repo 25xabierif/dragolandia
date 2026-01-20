@@ -80,7 +80,7 @@ public class Mago {
 
     @Override
     public String toString() {
-        return "Mago id=" + id + ", nombre=" + nombre + ", vida=" + vida + ", nivelMagia=" + nivelMagia + ".";
+        return "Mago id= " + id + ", nombre= " + nombre + ", vida= " + vida + ", nivelMagia= " + nivelMagia + ".";
     }
 
     /**
